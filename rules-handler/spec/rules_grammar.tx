@@ -1,0 +1,54 @@
+Rules:
+  rules*=Rule
+;
+
+Rule:
+  'RULE' (name = ID)? ':'
+  conditions += Condition
+  'TRIGGERS'
+  actions += Action
+;
+
+Condition:
+  parameter=Parameter operator=Operator value=Value
+;
+
+Parameter:
+  deviceId=UUID '[' property=STRING ']'
+;
+
+Operator:
+  '=' | '!=' | '<' | '>=' | '>' | '<=' | '<' | 'BETWEEN'
+;
+
+Value:
+  STRING | INT | FLOAT | Range
+;
+
+Range:
+  '[' from=FLOAT ',' to=FLOAT ']'
+;
+
+Action:
+   SendEmail | TurnOff
+;
+
+SendEmail:
+  name='SEND EMAIL' parameters=SendEmailParameters
+;
+
+SendEmailParameters:
+  content=STRING 'TO' recipient=STRING
+;
+
+TurnOff:
+  name='TURN OFF' parameters=TurnOffParameters
+;
+
+TurnOffParameters:
+  deviceId=UUID
+;
+
+UUID:
+ /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
+;
