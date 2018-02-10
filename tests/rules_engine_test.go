@@ -53,7 +53,7 @@ func TestListRules(t *testing.T) {
 	for i, tc := range cases {
 		r, err := svc.ListRules(tc.userId)
 		assert.Equal(t, tc.err, err, fmt.Sprintf("failed at %d\n", i))
-		assert.Equal(t, tc.rules, r, fmt.Sprintf("failed at %d\n", i))
+		assert.ElementsMatch(t, tc.rules, r, fmt.Sprintf("failed at %d\n", i))
 	}
 }
 

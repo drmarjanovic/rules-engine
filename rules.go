@@ -11,11 +11,54 @@ type Rule struct {
 
 // Condition represents definition what needs to be satisfied in order to trigger
 // an action.
-type Condition struct {
-	DeviceID string `json:"deviceId"`
-	Property string `json:"property"`
-	Operator string `json:"operator"`
-	Value    string `json:"value"`
+type Condition interface{}
+
+// ConditionData represents common condition properties.
+type ConditionData struct {
+	DeviceID *string `json:"deviceId"`
+	Property *string `json:"property"`
+	Operator *string `json:"operator"`
+}
+
+// Validate validates condition data properties.
+func (data *ConditionData) Validate() error {
+	if data.DeviceID == nil || data.Property == nil || data.Operator == nil {
+		return ErrMalformedEntity
+	}
+	return nil
+}
+
+// BooleanCondition represents condition with boolean value.
+type BooleanCondition struct {
+	*ConditionData
+	Value bool `json:"value"`
+}
+
+// BetweenCondition represents condition with value bounded in range.
+type BetweenCondition struct {
+	*ConditionData
+	From *float64 `json:"from"`
+	To   *float64 `json:"to"`
+}
+
+// Validate validates between condition properties.
+func (cnd *BetweenCondition) Validate() error {
+	if cnd.From == nil || cnd.To == nil || *cnd.From > *cnd.To {
+		return ErrMalformedEntity
+	}
+	return nil
+}
+
+// BetweenCondition represents condition with numeric value.
+type NumericCondition struct {
+	*ConditionData
+	Value float64 `json:"value"`
+}
+
+// StringCondition represents condition with string value.
+type StringCondition struct {
+	*ConditionData
+	Value string `json:"value"`
 }
 
 // Action represents base action specification.

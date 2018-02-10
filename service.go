@@ -13,8 +13,11 @@ var (
 	ErrNotFound error = errors.New("non-existent entity")
 )
 
-// Service specifies an API that must be fullfiled by domain service implementation.
+// Service specifies an API that must be fulfilled by domain service implementation.
 type Service interface {
+	// Save specific rule.
+	SaveRule(Rule) error
+
 	// ViewRule retrieves specific rule using unique identifiers of user and rule.
 	ViewRule(string, string) (Rule, error)
 

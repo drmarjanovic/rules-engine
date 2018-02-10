@@ -13,6 +13,10 @@ func NewService(rules RuleRepository) Service {
 	}
 }
 
+func (rs *ruleService) SaveRule(rule Rule) error {
+	return rs.rules.Save(rule)
+}
+
 func (rs *ruleService) ViewRule(userId string, ruleId string) (Rule, error) {
 	return rs.rules.One(userId, ruleId)
 }

@@ -16,7 +16,7 @@ APP = {
 
 NATS = {
     "url": os.environ.get("NATS_URL", "nats://127.0.0.1:4222"),
-    "topic": os.environ.get("NATS_TOPIC", "msg.rules")
+    "topic": os.environ.get("NATS_TOPIC", "rules")
 }
 
 define("port", default=APP["port"], help="Run on the given port", type=int)

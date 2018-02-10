@@ -10,11 +10,7 @@ Rule:
 ;
 
 Condition:
-  parameter=Parameter operator=Operator value=Value
-;
-
-Parameter:
-  deviceId=UUID '[' property=STRING ']'
+  deviceId=UUID '[' property=STRING ']' operator=Operator value=Value
 ;
 
 Operator:
@@ -30,24 +26,17 @@ Range:
 ;
 
 Action:
-   SendEmail | TurnOff
+  SendEmail | TurnOff
 ;
 
 SendEmail:
-  name='SEND EMAIL' parameters=SendEmailParameters
-;
-
-SendEmailParameters:
-  content=STRING 'TO' recipient=STRING
+  name='SEND EMAIL' content=STRING 'TO' recipient=STRING
 ;
 
 TurnOff:
-  name='TURN OFF' parameters=TurnOffParameters
+  name='TURN OFF' deviceId=UUID
 ;
 
-TurnOffParameters:
-  deviceId=UUID
-;
 
 UUID:
  /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/
