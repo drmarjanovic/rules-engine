@@ -1,0 +1,2 @@
+textX==1.6.1
+nats-client==0.5.6
