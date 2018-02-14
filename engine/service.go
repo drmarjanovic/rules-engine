@@ -1,6 +1,9 @@
-package rules
+package engine
 
-import "errors"
+import (
+	"errors"
+	"github.com/mainflux/mainflux/writer"
+)
 
 var (
 	// ErrMalformedUrl indicates malformed URL specification.
@@ -19,7 +22,7 @@ type Service interface {
 	SaveRule(Rule) error
 
 	// ViewRule retrieves specific rule using unique identifiers of user and rule.
-	ViewRule(string, string) (Rule, error)
+	ViewRule(string, string) (*Rule, error)
 
 	// ListRules retrieves data about all rules that belongs to specific user
 	// identified by user unique identifier.
@@ -28,4 +31,8 @@ type Service interface {
 	// RemoveRule removes specific rule identified by the user's unique identifier
 	// and rule's unique identifier.
 	RemoveRule(string, string) error
+
+	// ApplyRules checks which events satisfy which rules and execute related actions
+	// for satisfied rules.
+	ApplyRules(userId string, events []writer.Message) error
 }

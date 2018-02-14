@@ -6,10 +6,10 @@ import (
 	"strings"
 	"net/http"
 
-	subscribers "github.com/MainfluxLabs/rules-engine/nats"
-	"github.com/MainfluxLabs/rules-engine"
-	"github.com/MainfluxLabs/rules-engine/api"
-	"github.com/MainfluxLabs/rules-engine/cassandra"
+	subscribers "github.com/MainfluxLabs/rules-engine/engine/nats"
+	"github.com/MainfluxLabs/rules-engine/engine"
+	"github.com/MainfluxLabs/rules-engine/engine/api"
+	"github.com/MainfluxLabs/rules-engine/engine/cassandra"
 	"github.com/nats-io/go-nats"
 	"go.uber.org/zap"
 )
@@ -59,7 +59,7 @@ func main() {
 	}
 
 	rulesRepo := cassandra.NewRuleRepository(session)
-	svc := rules.NewService(rulesRepo)
+	svc := engine.NewService(rulesRepo)
 
 	nc, err := nats.Connect(cfg.NatsURL)
 	if err != nil {
@@ -67,7 +67,7 @@ func main() {
 	}
 	defer nc.Close()
 
-	eventsSubscriber := subscribers.NewEventSubscriber(nc, logger)
+	eventsSubscriber := subscribers.NewEventSubscriber(nc, svc, logger)
 	if _, err = eventsSubscriber.Subscribe(eventsSubject, eventsQueue); err != nil {
 		logger.Error("Unable to subscribe on Mainflux msg.* topics.", zap.Error(err))
 		os.Exit(1)

@@ -1,6 +1,6 @@
 // Package rules contains domain definitions for specifying alarming rules
 // and triggers in Mainflux.
-package rules
+package engine
 
 import (
 	"encoding/json"

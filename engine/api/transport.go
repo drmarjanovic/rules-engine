@@ -7,11 +7,11 @@ import (
 
 	kithttp "github.com/go-kit/kit/transport/http"
 	"github.com/go-zoo/bone"
-	"github.com/MainfluxLabs/rules-engine"
+	"github.com/MainfluxLabs/rules-engine/engine"
 )
 
 // MakeHandler returns a HTTP handler for API endpoints.
-func MakeHandler(svc rules.Service) http.Handler {
+func MakeHandler(svc engine.Service) http.Handler {
 	opts := []kithttp.ServerOption{
 		kithttp.ServerErrorEncoder(encodeError),
 	}
@@ -39,7 +39,7 @@ func MakeHandler(svc rules.Service) http.Handler {
 		opts...,
 	))
 
-	r.GetFunc("/health", rules.Health())
+	r.GetFunc("/health", engine.Health())
 
 	return r
 }
@@ -83,11 +83,11 @@ func encodeError(_ context.Context, err error, w http.ResponseWriter) {
 	w.Header().Set("Content-Type", contentType)
 
 	switch err {
-	case rules.ErrMalformedEntity:
+	case engine.ErrMalformedEntity:
 		w.WriteHeader(http.StatusBadRequest)
-	case rules.ErrMalformedUrl:
+	case engine.ErrMalformedUrl:
 		w.WriteHeader(http.StatusBadRequest)
-	case rules.ErrNotFound:
+	case engine.ErrNotFound:
 		w.WriteHeader(http.StatusNotFound)
 	default:
 		if _, ok := err.(*json.SyntaxError); ok {

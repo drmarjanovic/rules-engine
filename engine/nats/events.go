@@ -7,18 +7,20 @@ import (
 	"github.com/nats-io/go-nats"
 	"github.com/mainflux/mainflux/writer/cassandra"
 	"github.com/mainflux/mainflux/writer"
+	"github.com/MainfluxLabs/rules-engine/engine"
 )
 
 var _ Subscriber = (*eventsSubscriber)(nil)
 
 type eventsSubscriber struct {
-	nc     *nats.Conn
-	logger *zap.Logger
+	nc      *nats.Conn
+	service engine.Service
+	logger  *zap.Logger
 }
 
 // NewEventSubscriber instantiates subscription handler for senML messages
-func NewEventSubscriber(nc *nats.Conn, logger *zap.Logger) *eventsSubscriber {
-	return &eventsSubscriber{nc, logger}
+func NewEventSubscriber(nc *nats.Conn, service engine.Service, logger *zap.Logger) *eventsSubscriber {
+	return &eventsSubscriber{nc, service, logger}
 }
 
 func (es *eventsSubscriber) Subscribe(subject string, queue string) (*nats.Subscription, error) {
@@ -35,11 +37,12 @@ func (es *eventsSubscriber) Subscribe(subject string, queue string) (*nats.Subsc
 		}
 
 		if events, err = cassandra.Normalize(raw); err != nil {
-			es.logger.Error("Unable to parse SenML message.", zap.Error(err))
+			es.logger.Error("Unable to toDomain SenML message.", zap.Error(err))
 			return
 		}
 
 		sugar := es.logger.Sugar()
 		sugar.Infof("Applying rules on %d events.", len(events))
+		es.service.ApplyRules(raw.Publisher, events)
 	})
 }

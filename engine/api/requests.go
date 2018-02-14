@@ -2,7 +2,7 @@ package api
 
 import (
 	"github.com/asaskevich/govalidator"
-	"github.com/MainfluxLabs/rules-engine"
+	"github.com/MainfluxLabs/rules-engine/engine"
 )
 
 type apiReq interface {
@@ -16,7 +16,7 @@ type viewRuleReq struct {
 
 func (req viewRuleReq) validate() error {
 	if !govalidator.IsUUID(req.userId) || !govalidator.IsUUID(req.ruleId) {
-		return rules.ErrMalformedUrl
+		return engine.ErrMalformedUrl
 	}
 
 	return nil
@@ -28,7 +28,7 @@ type listRulesReq struct {
 
 func (req listRulesReq) validate() error {
 	if !govalidator.IsUUID(req.userId) {
-		return rules.ErrMalformedUrl
+		return engine.ErrMalformedUrl
 	}
 
 	return nil

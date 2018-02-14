@@ -4,28 +4,28 @@ import (
 	"encoding/json"
 	"go.uber.org/zap"
 
-	"github.com/MainfluxLabs/rules-engine"
 	"github.com/nats-io/go-nats"
+	"github.com/MainfluxLabs/rules-engine/engine"
 )
 
 var _ Subscriber = (*rulesSubscriber)(nil)
 
 type rulesSubscriber struct {
 	nc      *nats.Conn
-	service rules.Service
+	service engine.Service
 	logger  *zap.Logger
 }
 
 // NewRulesSubscriber instantiates subscription handler for rule creation
-func NewRulesSubscriber(nc *nats.Conn, service rules.Service, logger *zap.Logger) *rulesSubscriber {
+func NewRulesSubscriber(nc *nats.Conn, service engine.Service, logger *zap.Logger) *rulesSubscriber {
 	return &rulesSubscriber{nc, service, logger}
 }
 
 func (rs *rulesSubscriber) Subscribe(subject string, queue string) (*nats.Subscription, error) {
 	return rs.nc.QueueSubscribe(subject, queue, func(m *nats.Msg) {
 		var (
-			rls []rules.Rule
-			raw *RawRules
+			rls []engine.Rule
+			raw *rulesMsg
 			err error
 		)
 
@@ -34,8 +34,8 @@ func (rs *rulesSubscriber) Subscribe(subject string, queue string) (*nats.Subscr
 			return
 		}
 
-		if rls, err = raw.toRules(); err != nil {
-			rs.logger.Error("Failed to parse rules.", zap.Error(err))
+		if rls, err = raw.toDomain(); err != nil {
+			rs.logger.Error("Failed to toDomain rules.", zap.Error(err))
 			return
 		}
 

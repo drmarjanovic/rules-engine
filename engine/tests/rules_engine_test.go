@@ -5,27 +5,27 @@ import (
 	"fmt"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/MainfluxLabs/rules-engine"
-	"github.com/MainfluxLabs/rules-engine/mocks"
+	"github.com/MainfluxLabs/rules-engine/engine/mocks"
+	"github.com/MainfluxLabs/rules-engine/engine"
 )
 
 var (
-	rulesRepo rules.RuleRepository = mocks.NewRuleRepository()
-	svc       rules.Service        = rules.NewService(rulesRepo)
+	rulesRepo engine.RuleRepository = mocks.NewRuleRepository()
+	svc       engine.Service        = engine.NewService(rulesRepo)
 )
 
 func TestViewRule(t *testing.T) {
-	existingRule := rules.Rule{"1", "1", "test-rule-1", make([]rules.Condition, 0), make([]rules.Action, 0)}
+	existingRule := engine.Rule{"1", "1", "test-rule-1", make([]engine.Condition, 0), make([]engine.Action, 0)}
 	rulesRepo.Save(existingRule)
 
 	cases := []struct {
 		userId string
 		ruleId string
-		rule   rules.Rule
+		rule   *engine.Rule
 		err    error
 	}{
-		{"1", "1", existingRule, nil},
-		{"1", "2", rules.Rule{}, rules.ErrNotFound},
+		{"1", "1", &existingRule, nil},
+		{"1", "2", &engine.Rule{}, engine.ErrNotFound},
 	}
 
 	for i, tc := range cases {
@@ -36,18 +36,18 @@ func TestViewRule(t *testing.T) {
 }
 
 func TestListRules(t *testing.T) {
-	r1 := rules.Rule{"1", "2", "test-rule-1", make([]rules.Condition, 0), make([]rules.Action, 0)}
-	r2 := rules.Rule{"2", "2", "test-rule-2", make([]rules.Condition, 0), make([]rules.Action, 0)}
+	r1 := engine.Rule{"1", "2", "test-rule-1", make([]engine.Condition, 0), make([]engine.Action, 0)}
+	r2 := engine.Rule{"2", "2", "test-rule-2", make([]engine.Condition, 0), make([]engine.Action, 0)}
 	rulesRepo.Save(r1)
 	rulesRepo.Save(r2)
 
 	cases := []struct {
 		userId string
-		rules  []rules.Rule
+		rules  []engine.Rule
 		err    error
 	}{
-		{"2", []rules.Rule{r1, r2}, nil},
-		{"3", make([]rules.Rule, 0), nil},
+		{"2", []engine.Rule{r1, r2}, nil},
+		{"3", make([]engine.Rule, 0), nil},
 	}
 
 	for i, tc := range cases {

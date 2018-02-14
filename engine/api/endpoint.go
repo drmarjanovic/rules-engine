@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"github.com/go-kit/kit/endpoint"
-	"github.com/MainfluxLabs/rules-engine"
+	"github.com/MainfluxLabs/rules-engine/engine"
 )
 
-func retrieveRuleEndpoint(svc rules.Service) endpoint.Endpoint {
+func retrieveRuleEndpoint(svc engine.Service) endpoint.Endpoint {
 	return func(_ context.Context, body interface{}) (interface{}, error) {
 		b := body.(viewRuleReq)
 
@@ -20,11 +20,11 @@ func retrieveRuleEndpoint(svc rules.Service) endpoint.Endpoint {
 			return nil, err
 		}
 
-		return viewRuleRes{rule}, nil
+		return viewRuleRes{*rule}, nil
 	}
 }
 
-func retrieveRulesEndpoint(svc rules.Service) endpoint.Endpoint {
+func retrieveRulesEndpoint(svc engine.Service) endpoint.Endpoint {
 	return func(_ context.Context, body interface{}) (interface{}, error) {
 		b := body.(listRulesReq)
 
@@ -41,7 +41,7 @@ func retrieveRulesEndpoint(svc rules.Service) endpoint.Endpoint {
 	}
 }
 
-func removeRuleEndpoint(svc rules.Service) endpoint.Endpoint {
+func removeRuleEndpoint(svc engine.Service) endpoint.Endpoint {
 	return func(_ context.Context, body interface{}) (interface{}, error) {
 		b := body.(viewRuleReq)
 

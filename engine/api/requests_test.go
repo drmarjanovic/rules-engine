@@ -6,7 +6,7 @@ import (
 
 	"github.com/gocql/gocql"
 	"github.com/stretchr/testify/assert"
-	"github.com/MainfluxLabs/rules-engine"
+	"github.com/MainfluxLabs/rules-engine/engine"
 )
 
 func TestViewRuleReqValidation(t *testing.T) {
@@ -16,9 +16,9 @@ func TestViewRuleReqValidation(t *testing.T) {
 		err    error
 	}{
 		{gocql.TimeUUID().String(), gocql.TimeUUID().String(), nil},
-		{"malformed user id", gocql.TimeUUID().String(), rules.ErrMalformedUrl},
-		{gocql.TimeUUID().String(), "malformed rule id", rules.ErrMalformedUrl},
-		{"malformed user id", "malformed rule id", rules.ErrMalformedUrl},
+		{"malformed user id", gocql.TimeUUID().String(), engine.ErrMalformedUrl},
+		{gocql.TimeUUID().String(), "malformed rule id", engine.ErrMalformedUrl},
+		{"malformed user id", "malformed rule id", engine.ErrMalformedUrl},
 	}
 
 	for i, tc := range cases {
@@ -34,7 +34,7 @@ func TestListRulesReqValidation(t *testing.T) {
 		err    error
 	}{
 		{gocql.TimeUUID().String(), nil},
-		{"malformed user-id", rules.ErrMalformedUrl},
+		{"malformed user-id", engine.ErrMalformedUrl},
 	}
 
 	for i, tc := range cases {

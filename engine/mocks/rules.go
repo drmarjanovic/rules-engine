@@ -5,24 +5,24 @@ import (
 	"strings"
 	"fmt"
 
-	"github.com/MainfluxLabs/rules-engine"
+	"github.com/MainfluxLabs/rules-engine/engine"
 )
 
-var _ rules.RuleRepository = (*ruleRepositoryMock)(nil)
+var _ engine.RuleRepository = (*ruleRepositoryMock)(nil)
 
 type ruleRepositoryMock struct {
 	mu    sync.Mutex
-	rules map[string]rules.Rule
+	rules map[string]engine.Rule
 }
 
 // NewRuleRepository instantiates in-memory rule repository.
-func NewRuleRepository() rules.RuleRepository {
+func NewRuleRepository() engine.RuleRepository {
 	return &ruleRepositoryMock{
-		rules: make(map[string]rules.Rule),
+		rules: make(map[string]engine.Rule),
 	}
 }
 
-func (repo *ruleRepositoryMock) Save(rule rules.Rule) error {
+func (repo *ruleRepositoryMock) Save(rule engine.Rule) error {
 	repo.mu.Lock()
 	defer repo.mu.Unlock()
 
@@ -31,21 +31,21 @@ func (repo *ruleRepositoryMock) Save(rule rules.Rule) error {
 	return nil
 }
 
-func (repo *ruleRepositoryMock) One(userId string, ruleId string) (rules.Rule, error) {
+func (repo *ruleRepositoryMock) One(userId string, ruleId string) (*engine.Rule, error) {
 	repo.mu.Lock()
 	defer repo.mu.Unlock()
 
 	if r, ok := repo.rules[key(userId, ruleId)]; ok {
-		return r, nil
+		return &r, nil
 	}
 
-	return rules.Rule{}, rules.ErrNotFound
+	return &engine.Rule{}, engine.ErrNotFound
 }
 
-func (repo *ruleRepositoryMock) All(userId string) []rules.Rule {
+func (repo *ruleRepositoryMock) All(userId string) []engine.Rule {
 	prefix := fmt.Sprintf("%s-", userId)
 
-	rulesList := make([]rules.Rule, 0)
+	rulesList := make([]engine.Rule, 0)
 
 	for k, v := range repo.rules {
 		if strings.HasPrefix(k, prefix) {

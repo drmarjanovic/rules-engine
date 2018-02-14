@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/MainfluxLabs/rules-engine"
+	"github.com/MainfluxLabs/rules-engine/engine"
 )
 
 const contentType = "application/json; charset=utf-8"
@@ -16,7 +16,7 @@ type apiRes interface {
 }
 
 type viewRuleRes struct {
-	rules.Rule
+	engine.Rule
 }
 
 func (res viewRuleRes) code() int {
@@ -32,7 +32,7 @@ func (res viewRuleRes) empty() bool {
 }
 
 type listRulesRes struct {
-	Rules []rules.Rule `json:"rules"`
+	Rules []engine.Rule `json:"rules"`
 	count int
 }
 
