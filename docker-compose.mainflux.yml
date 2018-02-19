@@ -1,0 +1,26 @@
+version: '3'
+
+services:
+  rules-engine-service:
+    image: mainflux-labs/rules-engine:latest
+    container_name: mainflux-rules-engine-service
+    external_links:
+      - mainflux-rules-engine-cassandra:cassandra
+      - mainflux-rules-engine-nats:nats
+    environment:
+      RULES_ENGINE_DB_CLUSTER: cassandra
+      RULES_ENGINE_DB_KEYSPACE: rules_engine
+      NATS_URL: nats://nats:4222
+    ports:
+      - "9000:9000"
+
+  rules-engine-parser:
+    image: mainflux-labs/rules-engine-parser:latest
+    container_name: mainflux-rules-engine-parser
+    external_links:
+      - mainflux-rules-engine-nats:nats
+    environment:
+      NATS_URL: nats://nats:4222
+      NATS_TOPIC: rules
+    ports:
+      - "8888:8888"

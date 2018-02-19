@@ -5,7 +5,7 @@ from tornado.options import options, define
 
 logger = logging.getLogger(__name__)
 
-VERSION = "0.2.0-rc.1"
+VERSION = "0.3.0-rc.1"
 
 GRAMMAR_FILE = "spec/rules_grammar.tx"
 
