@@ -7,3 +7,9 @@ services:
     ports:
       - "9042:9042"
       - "9160:9160"
+  nats:
+    image: nats:1.0.2
+    container_name: mainflux-rules-engine-nats
+    ports:
+      - "4222:4222"
+      - "8222:8222"
